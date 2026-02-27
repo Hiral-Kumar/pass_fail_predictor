@@ -4,7 +4,23 @@ import joblib
 
 PASSING_PERCENTAGE = 45
 
-model = joblib.load("pass_fail_model.pkl")
+import os
+import joblib
+from sklearn.linear_model import LogisticRegression
+
+MODEL_PATH = "pass_fail_model.pkl"
+
+if os.path.exists(MODEL_PATH):
+    model = joblib.load(MODEL_PATH)
+else:
+    # Train model on startup (deployment-safe)
+    X = df[feature_columns]
+    y = df["final_result"]
+
+    model = LogisticRegression(max_iter=1000)
+    model.fit(X, y)
+
+    joblib.dump(model, MODEL_PATH)
 
 subjects = [
     "maths", "science", "english",
