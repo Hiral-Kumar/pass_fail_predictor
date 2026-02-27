@@ -8,14 +8,37 @@ import os
 import joblib
 from sklearn.linear_model import LogisticRegression
 
+# ==============================
+# PHASE 1: LOAD DATASET
+# ==============================
+
+@st.cache_data
+def load_dataset():
+    return pd.read_csv("student_pass_fail_dataset_10000.csv")
+
+df = load_dataset()
+
+# ==============================
+# PHASE 2: FEATURE SELECTION
+# ==============================
+
+feature_columns = [
+    "overall_marks_percentage",
+    "attendance_score"
+]
+
+target_column = "final_result"
+# ==============================
+# PHASE 3: MODEL LOAD OR TRAIN
+# ==============================
+
 MODEL_PATH = "pass_fail_model.pkl"
 
 if os.path.exists(MODEL_PATH):
     model = joblib.load(MODEL_PATH)
 else:
-    # Train model on startup (deployment-safe)
     X = df[feature_columns]
-    y = df["final_result"]
+    y = df[target_column]
 
     model = LogisticRegression(max_iter=1000)
     model.fit(X, y)
